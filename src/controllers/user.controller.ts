@@ -74,3 +74,15 @@ export const deleteUser = async (req: Request, res: Response) => {
     return res.status(500).json("ERROR:IN DELETE-USER-CONTROLLER");
   }
 };
+
+// fetch all users;
+export const getALLUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find();
+
+    return res.status(201).json({ message: "fetch successfull", users });
+  } catch (error) {
+    console.log(`ERROR:IN FETCH-USER-CONTROLLER,${error}`);
+    return res.status(500).json("ERROR:IN FETCH-USER-CONTROLLER");
+  }
+};
