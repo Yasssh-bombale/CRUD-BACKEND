@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
+import nodeMailer from "nodemailer";
 
 // create user
 export const createUser = async (req: Request, res: Response) => {
@@ -84,5 +85,61 @@ export const getALLUsers = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(`ERROR:IN FETCH-USER-CONTROLLER,${error}`);
     return res.status(500).json("ERROR:IN FETCH-USER-CONTROLLER");
+  }
+};
+
+//send email;
+
+// const demoArray = ["yash", "bombale"];
+
+export const sendEmail = async (req: Request, res: Response) => {
+  const { filteredUsersData } = req.body;
+
+  console.log(filteredUsersData);
+
+  if (!filteredUsersData) {
+    return res.status(400).json("selected user is needed");
+  }
+
+  const html = `<h1>Your selected users are</h1><ul>${filteredUsersData
+    .map(
+      (user: any, index: number) =>
+        `<li>${index + 1} Username is ${user.userName},<br/> Email is ${
+          user.email
+        } <br/> phoneNumber is ${user.phoneNumber} <br/> Hobbies is ${
+          user.hobbies
+        } </li>`
+    )
+    .join("")}</ul>`;
+
+  try {
+    const transporter = nodeMailer.createTransport({
+      service: "gmail",
+      port: 465,
+      secure: true,
+      logger: true,
+      debug: true,
+      auth: {
+        user: process.env.USER,
+        pass: process.env.PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: true,
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: '"Yash Bombale" <yashbombale@gmail.com>', // sender address
+      to: "info@redpositive.in", // list of receivers
+      subject: "To send selected users", // Subject line
+      text: "Hey there", // plain text body
+      html: html, // html body
+    });
+
+    // console.log("Message sent: %s", info.messageId);
+    res.json(info);
+  } catch (error) {
+    console.log(`ERROR:IN SEND-EMAIL-CONTROLLER,${error}`);
+    return res.status(500).json("ERROR:IN SEND-EMAIL-CONTROLLER");
   }
 };

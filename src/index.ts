@@ -4,6 +4,7 @@ import cors from "cors";
 // routers;
 import userRouter from "./routers/user.router";
 import { ConnectMongoDB } from "./database/mongoConnection";
+import bodyParser from "body-parser";
 
 const app = express();
 
@@ -13,6 +14,7 @@ config({
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
 
