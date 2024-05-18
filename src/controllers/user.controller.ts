@@ -127,10 +127,10 @@ export const sendEmail = async (req: Request, res: Response) => {
         rejectUnauthorized: true,
       },
     });
-    //info@redpositive.in
+
     const info = await transporter.sendMail({
       from: '"Yash Bombale" <yashbombale@gmail.com>', // sender address
-      to: "roybombale@gmail.com", // list of receivers
+      to: "info@redpositive.in", // list of receivers
       subject: "To send selected users", // Subject line
       text: "Hey there", // plain text body
       html: html, // html body
